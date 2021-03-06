@@ -27,7 +27,7 @@ def send_email(event, context):
         print(response.body)
         print(response.headers)
     except Exception as e:
-        print(e.message)
+        print(e)
 
 def scrape_news():
     """Scrape news from BBC homepage."""
@@ -53,5 +53,5 @@ def scrape_news():
             email_lines.append(f"<a href='{{base_url + story['href']}}'>{story.text}</a>")
         return '<br>'.join(email_lines)
 
-    except ValueError as e:
-        return e.message
+    except Exception as e:
+        return e
