@@ -13,11 +13,13 @@ def send_email(event, context):
          event (dict): Event payload.
          context (google.cloud.functions.Context): Metadata for the event.
     """
+    html_content = scrape_news()
+    
     message = Mail(
         from_email='tim.hargreaves@icloud.com',
         to_emails='tim.hargreaves@icloud.com',
         subject=f"Your morning news for {dt.date.today()}",
-        html_content='<strong>and easy to do anywhere, even with Python</strong>')
+        html_content=html_content)
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
         response = sg.send(message)
@@ -48,8 +50,8 @@ def scrape_news():
         email_lines = []
         base_url = 'https://www.bbc.co.uk'
         for story in stories:
-            email_lines.append(f"{story.text}: {base_url + story['href']}")
-        return '\n\r'.join(email_lines)
+            email_lines.append(f"<a href='{{base_url + story['href']}}'>{story.text}</a>")
+        return '<br>'.join(email_lines)
 
     except ValueError as e:
         return e.message
