@@ -34,7 +34,7 @@ def scrape_news():
     try:
         # Scrape BBC homepage
         res = requests.get('https://www.bbc.co.uk/news')
-        if 200 <= res.status_code < 300:
+        if not 200 <= res.status_code < 300:
             raise ValueError(f"request failed with code {res.status_code}")
         soup = BeautifulSoup(res.content, 'html.parser')
 
