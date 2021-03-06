@@ -28,28 +28,28 @@ def send_email(event, context):
         print(e.message)
 
 def scrape_news():
-	"""Scrape news from BBC homepage."""
-	try:
-		# Scrape BBC homepage
-		res = requests.get('https://www.bbc.co.uk/news')
-		if 200 <= res.status_code < 300:
-			raise ValueError(f"request failed with code {res.status_code}")
-		soup = BeautifulSoup(res.content, 'html.parser')
+    """Scrape news from BBC homepage."""
+    try:
+        # Scrape BBC homepage
+        res = requests.get('https://www.bbc.co.uk/news')
+        if 200 <= res.status_code < 300:
+            raise ValueError(f"request failed with code {res.status_code}")
+        soup = BeautifulSoup(res.content, 'html.parser')
 
-		# Find top stories section
-		top_stories = soup.find('div', {
-			'class': 'nw-c-top-stories__tertiary-items'
-		})
-		stories = top_stories.find_all('a', {
-			'class': 'gs-c-promo-heading'
-		})
+        # Find top stories section
+        top_stories = soup.find('div', {
+            'class': 'nw-c-top-stories__tertiary-items'
+        })
+        stories = top_stories.find_all('a', {
+            'class': 'gs-c-promo-heading'
+        })
 
-		# Create email content
+        # Create email content
         email_lines = []
-		base_url = 'https://www.bbc.co.uk'
-		for story in stories:
-			email_lines.append(f"{story.text}: {base_url + story['href']}")
-		return '\n\r'.join(email_lines)
+        base_url = 'https://www.bbc.co.uk'
+        for story in stories:
+            email_lines.append(f"{story.text}: {base_url + story['href']}")
+        return '\n\r'.join(email_lines)
 
-	except ValueError as e:
-		return e.message
+    except ValueError as e:
+        return e.message
