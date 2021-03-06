@@ -33,14 +33,14 @@ def scrape_news():
     """Scrape news from BBC homepage."""
     try:
         # Scrape BBC homepage
-        res = requests.get('https://www.bbc.co.uk/news')
+        res = requests.get('https://www.bbc.co.uk/news/technology')
         if not 200 <= res.status_code < 300:
             raise ValueError(f"request failed with code {res.status_code}")
         soup = BeautifulSoup(res.content, 'html.parser')
 
         # Find top stories section
         top_stories = soup.find('div', {
-            'class': 'nw-c-top-stories__tertiary-items'
+            'id': 'topos-component'
         })
         stories = top_stories.find_all('a', {
             'class': 'gs-c-promo-heading'
@@ -48,9 +48,13 @@ def scrape_news():
 
         # Create email content
         email_lines = []
+        urls = set()
         base_url = 'https://www.bbc.co.uk'
         for story in stories:
-            email_lines.append(f"<a href='{{base_url + story['href']}}'>{story.text}</a>")
+            url = base_url + story['href']
+            if not url in urls:
+                urls.add(url)
+                email_lines.append(f"<a href='{url}'>{story.text}</a>")
         return '<br>'.join(email_lines)
 
     except Exception as e:
