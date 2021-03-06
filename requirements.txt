@@ -1,0 +1,2 @@
+sendgrid==6.6
+beautifulsoup4==4.9
